@@ -1,0 +1,6 @@
+.*
+!.github
+!.gitignore
+!.gitattributes
+__pycache__/
+
