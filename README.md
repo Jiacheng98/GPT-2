@@ -31,13 +31,12 @@ This project is inspired by Andrej Karpathy's tutorial. You can watch the detail
     ```
 
 ### Training
-# GPT-2 from Scratch on M1 Mac
 To train the GPT-2 model from scratch using the Tiny Shakespeare dataset, run the following command:
 
     ```bash
     python main.py
     ```
 
-### LOGS
+### Logs
 Training logs can be found in the log.txt file under the log folder.
 
