@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 import math
+from transformers import GPT2LMHeadModel
 
 class CausalSelfAttention(nn.Module):
     def __init__(self, config):
@@ -30,11 +31,12 @@ class CausalSelfAttention(nn.Module):
         q = q.view(B, T, self.n_head, C // self.n_head).transpose(1, 2)
         v = v.view(B, T, self.n_head, C // self.n_head).transpose(1, 2)
         # Compute attention scores
-        att = (q @ k.transpose(-2, -1) * (1.0 / math.sqrt(k.size(-1))))
-        # Make sure the tokens only attend to the tokens before them and not after
-        att = att.masked_fill(self.bias[:, :, :T, :T] == 0, float('-inf'))
-        att = F.softmax(att, dim = -1)
-        y = att @ v # (B, n_head, T, T) * (B, n_head, T, C // self.n_head) -> (B, n_head, T, C // self.n_head)
+        # att = (q @ k.transpose(-2, -1) * (1.0 / math.sqrt(k.size(-1))))
+        # # Make sure the tokens only attend to the tokens before them and not after
+        # att = att.masked_fill(self.bias[:, :, :T, :T] == 0, float('-inf'))
+        # att = F.softmax(att, dim = -1)
+        # y = att @ v # (B, n_head, T, T) * (B, n_head, T, C // self.n_head) -> (B, n_head, T, C // self.n_head)
+        y = F.scaled_dot_product_attention(q, k, v, is_causal=True) # flash attention, boost efficiency utilizing the memory hierarchy
         y = y.transpose(1, 2).contiguous().view(B, T, C)
         y = self.c_proj(y)
         return y
@@ -139,7 +141,6 @@ class GPT(nn.Module):
     @classmethod
     def from_pretrained(cls, model_type):
         "Loads pretrained GPT-2 weights from huggingface"
-        from transformers import GPT2LMHeadModel
         print(f"Loading weights from pretrained gpt: {model_type}")
 
         config_args = {
