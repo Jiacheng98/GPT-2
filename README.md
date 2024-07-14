@@ -1,10 +1,6 @@
 # GPT-2 from Scratch on M1 Mac
 This repository contains the implementation of GPT-2 built from scratch and tested on an M1 Mac.
 
-## Dataset
-
-The dataset used for training is the [Tiny Shakespeare](https://raw.githubusercontent.com/karpathy/char-rnn/master/data/tinyshakespeare/input.txt) dataset. The dataset is stored in the `input.txt` file.
-
 ## Reference
 
 This project is inspired by Andrej Karpathy's tutorial. You can watch the detailed explanation in his [YouTube video](https://www.youtube.com/watch?v=l8pRSuU81PU&t=483s&ab_channel=AndrejKarpathy).
@@ -30,6 +26,11 @@ This project is inspired by Andrej Karpathy's tutorial. You can watch the detail
     pip install -r requirements.txt
     ```
 
+
+### Dataset
+
+The dataset used for training is the [Tiny Shakespeare](https://raw.githubusercontent.com/karpathy/char-rnn/master/data/tinyshakespeare/input.txt) dataset. The dataset is stored in the `input.txt` file.
+
 ### Training
 To train the GPT-2 model from scratch using the Tiny Shakespeare dataset, run the following command:
     ```bash
@@ -37,5 +38,8 @@ To train the GPT-2 model from scratch using the Tiny Shakespeare dataset, run th
     ```
 
 ### Logs
-Training logs can be found in the log.txt file under the log folder.
+Training logs can be found in the log.txt file under the log folder. The following figure shows the training and validation loss changes with the number of steps:
 
+!["Training and validation loss](figure/loss.png)
+
+Testing loss: XX

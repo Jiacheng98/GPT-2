@@ -1,19 +1,20 @@
-using device: cpu
-Step 0, training loss: 10.92561149597168, total_norm: 34.1302490234375, lr: 5.9999999999999995e-05
-Validaiton loss: 9.764470100402832
-Testing loss: 9.684897422790527
+Using device: cpu
+Step 0, training loss: 10.928370475769043, total_norm: 30.599348068237305, lr: 5.9999999999999995e-05
+Step 0, validation loss: 9.709343910217285
+Testing loss: 9.636306762695312
+
 Sentences Completion Samples: 
 > Hello, I'm a happy person
 
 
-Dest
+ hub
 
 
 
-stresscharge
+ whe Liberia
 
 
- "-
+liest
 
 
 
@@ -24,13 +25,13 @@ stresscharge
 
 
 > Hello, I'm a happy person
-Interstitial
+ se
 
 
 
 
 
- intriguing
+liest
 
 
 
@@ -44,36 +45,12 @@ Interstitial
 
 ,
 
-> Hello, I'm a happy person jungle
+> Hello, I'm a happy personides
 
 
 
 
- dolphins intriguing
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-> Hello, I'm a happy person
-
-
-
-
-
-
-
-
+ HazLB
 
 
 
@@ -100,10 +77,34 @@ Interstitial
 
 
 
- bureaucracy
 
 
-:
+
+
+
+
+
+
+
+
+
+
+
+> Hello, I'm a happy person
+
+
+
+
+
+
+
+
+
+
+plet
+
+
+ Film
 
 
 

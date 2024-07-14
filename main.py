@@ -25,7 +25,7 @@ elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
     device = "mps"
 device = "cpu" # Force using cpu due to GPU memory constrain
 with open(log_file, "w") as f:
-    f.write(f"using device: {device}\n")
+    f.write(f"Using device: {device}\n")
 
 
 def get_lr(it, max_lr, min_lr, warmup_steps, max_steps):
@@ -55,43 +55,9 @@ def test(model, x, y, batch_size):
         loss += 1/batch_no * loss_batch
     return loss
 
-def generate(model):
-    with open(log_file, "a") as f:
-        f.write(f"\nSentences Completion Samples: \n")
-
-    num_return_sequences = 5
-    max_length = 30
-
-    # Prefix tokens
-    enc = tiktoken.get_encoding('gpt2')
-    tokens = enc.encode("Hello, I'm a happy person")
-    tokens = torch.tensor(tokens, dtype = torch.long) 
-    tokens = tokens.unsqueeze(0).repeat(num_return_sequences, 1)
-    x = tokens.to(device)
-
-    # Generate!
-    while x.size(1) < max_length:
-        with torch.no_grad():
-            logits, _ = model(x) # (B, T, vocab_size)
-            # Take the logits at the last position
-            logits = logits[:, -1, :] # (B, vocab_size)
-            probs = F.softmax(logits, dim = -1)
-            # Do top-k sampling of 50
-            topk_probs, topk_indices = torch.topk(probs, 50, dim = -1) # (B, 50)
-            ix = torch.multinomial(topk_probs, 1) # (B, 1), select one token for each sequence
-            xcol = torch.gather(topk_indices, -1, ix) # (B, 1), gather the corresponding indices
-            x = torch.cat((x, xcol), dim = 1) # Append the selected token to the sequence
-
-    # Print the generated text
-    for i in range(num_return_sequences):
-        tokens = x[i, :max_length].tolist()
-        decoded = enc.decode(tokens)
-        with open(log_file, "a") as f:
-            f.write(f"> {decoded}\n")
-
 def main():
     # Get training data
-    data_loader = DataLoaderLite(B=8, T=32)
+    data_loader = DataLoaderLite(B=16, T=32)
     val_x, val_y, test_x, test_y = data_loader.get_val_test()
 
     # Model
@@ -107,7 +73,7 @@ def main():
     
     # Optimization, weight decay: penalizing large weights
     optimizer = torch.optim.AdamW(model.parameters(), lr = 3e-4, betas=(0.9, 0.95), eps=1e-8, weight_decay=0.1)
-    early_stopper = EarlyStopper(patience=10, min_delta=10)
+    early_stopper = EarlyStopper(patience=50, min_delta=0.1)
     for step in range(1):
         x, y = data_loader.next_batch()
         x, y = x.to(device), y.to(device)
@@ -125,22 +91,30 @@ def main():
         with open(log_file, "a") as f:
             f.write(f"Step {step}, training loss: {loss}, total_norm: {total_norm}, lr: {lr}\n")
 
-        if step % 100 == 0:
+        if step % 50 == 0:
             val_loss = test(model, val_x, val_y, data_loader.B)
             with open(log_file, "a") as f:
-                f.write(f"Validaiton loss: {val_loss}\n")
+                f.write(f"Step {step}, validation loss: {val_loss}\n")
+                # write model checkpoints
+                checkpoint_path = os.path.join("log/", f"model_{step:05d}.pt")
+                checkpoint = {
+                    'model': model.state_dict(),
+                    'optimizer': optimizer.state_dict(),
+                    'config': model.config,
+                    'step': step,
+                    'val_loss': val_loss.item(),
+                    'seed': 2
+                }
+                torch.save(checkpoint, checkpoint_path)
+
                 if early_stopper.early_stop(val_loss): 
                     with open(log_file, "a") as f:
-                        f.write("Early Stopping!\n")            
+                        f.write("Early stopping!\n")            
                     break
 
     test_loss = test(model, test_x, test_y, data_loader.B)
     with open(log_file, "a") as f:
         f.write(f"Testing loss: {test_loss}\n")
-
-    generate(model)
-
-
 
 
 if __name__ == "__main__":
