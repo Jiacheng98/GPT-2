@@ -1,114 +1,15 @@
 Using device: cpu
 Step 0, training loss: 10.928370475769043, total_norm: 30.599348068237305, lr: 5.9999999999999995e-05
 Step 0, validation loss: 9.709343910217285
-Testing loss: 9.636306762695312
-
-Sentences Completion Samples: 
-> Hello, I'm a happy person
-
-
- hub
-
-
-
- whe Liberia
-
-
-liest
-
-
-
-
-
-
-
-
-
-> Hello, I'm a happy person
- se
-
-
-
-
-
-liest
-
-
-
-
-
-
-
-
-
-
-
-,
-
-> Hello, I'm a happy personides
-
-
-
-
- HazLB
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-> Hello, I'm a happy person
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-> Hello, I'm a happy person
-
-
-
-
-
-
-
-
-
-
-plet
-
-
- Film
-
-
-
-
-
-
-
+Step 1, training loss: 9.6537504196167, total_norm: 10.331650733947754, lr: 0.00011999999999999999
+Step 2, training loss: 8.999080657958984, total_norm: 5.400960922241211, lr: 0.00017999999999999998
+Step 3, training loss: 8.875970840454102, total_norm: 3.319516181945801, lr: 0.00023999999999999998
+Step 4, training loss: 9.248790740966797, total_norm: 4.683578968048096, lr: 0.0003
+Step 5, training loss: 8.656591415405273, total_norm: 2.5567805767059326, lr: 0.00035999999999999997
+Step 6, training loss: 8.303865432739258, total_norm: 2.623532772064209, lr: 0.00041999999999999996
+Step 7, training loss: 8.327607154846191, total_norm: 2.205345869064331, lr: 0.00047999999999999996
+Step 8, training loss: 8.387380599975586, total_norm: 2.1633152961730957, lr: 0.0005399999999999999
+Step 9, training loss: 8.094061851501465, total_norm: 1.969725251197815, lr: 0.0006
+Step 10, training loss: 7.544426441192627, total_norm: 2.4650094509124756, lr: 0.0005999999999999998
+Step 11, training loss: 6.849720478057861, total_norm: 1.7199416160583496, lr: 0.0005991676801079444
+Step 12, training loss: 7.164328098297119, total_norm: 2.0977866649627686, lr: 0.0005966758519606872

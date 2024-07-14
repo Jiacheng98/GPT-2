@@ -74,7 +74,7 @@ def main():
     # Optimization, weight decay: penalizing large weights
     optimizer = torch.optim.AdamW(model.parameters(), lr = 3e-4, betas=(0.9, 0.95), eps=1e-8, weight_decay=0.1)
     early_stopper = EarlyStopper(patience=50, min_delta=0.1)
-    for step in range(1):
+    for step in range(5000):
         x, y = data_loader.next_batch()
         x, y = x.to(device), y.to(device)
         optimizer.zero_grad()
