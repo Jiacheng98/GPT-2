@@ -1,7 +1,4 @@
 .*
-!.github
-!.gitignore
-!.gitattributes
 !.dockerignore
 __pycache__/
 ./
