@@ -27,7 +27,7 @@ This repository contains the implementation of GPT-2 built from scratch and test
 
 You can also run the project in a Docker container by following these steps:
 
-1. **Pull the Docker image**:
+1. **Pull the Docker base image**:
 
     ```bash
     docker pull robd003/python3.10:latest
