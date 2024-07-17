@@ -55,6 +55,19 @@ def test(model, x, y, batch_size):
         loss += 1/batch_no * loss_batch
     return loss
 
+def save_checkpoint(model, optimizer, step):
+    # write model checkpoints
+    checkpoint_path = os.path.join("log/", f"model_{step:05d}.pt")
+    checkpoint = {
+        'model': model.state_dict(),
+        'optimizer': optimizer.state_dict(),
+        'config': model.config,
+        'step': step,
+        'seed': 2
+    }
+    torch.save(checkpoint, checkpoint_path)
+
+
 def main():
     # Get training data
     data_loader = DataLoaderLite(B=16, T=32)
@@ -74,7 +87,8 @@ def main():
     # Optimization, weight decay: penalizing large weights
     optimizer = torch.optim.AdamW(model.parameters(), lr = 3e-4, betas=(0.9, 0.95), eps=1e-8, weight_decay=0.1)
     early_stopper = EarlyStopper(patience=50, min_delta=0.1)
-    for step in range(5000):
+    max_step, save_model = 5000, False
+    for step in range(max_step):
         x, y = data_loader.next_batch()
         x, y = x.to(device), y.to(device)
         optimizer.zero_grad()
@@ -95,23 +109,15 @@ def main():
             val_loss = test(model, val_x, val_y, data_loader.B)
             with open(log_file, "a") as f:
                 f.write(f"Step {step}, validation loss: {val_loss}\n")
-                # write model checkpoints
-                checkpoint_path = os.path.join("log/", f"model_{step:05d}.pt")
-                checkpoint = {
-                    'model': model.state_dict(),
-                    'optimizer': optimizer.state_dict(),
-                    'config': model.config,
-                    'step': step,
-                    'val_loss': val_loss.item(),
-                    'seed': 2
-                }
-                torch.save(checkpoint, checkpoint_path)
-
                 if early_stopper.early_stop(val_loss): 
                     with open(log_file, "a") as f:
-                        f.write("Early stopping!\n")            
+                        f.write("Early stopping!\n")
+                        save_checkpoint(model, optimizer, step)
+                        save_model = True            
                     break
 
+    if not save_model:
+        save_checkpoint(model, optimizer, max_step)
     test_loss = test(model, test_x, test_y, data_loader.B)
     with open(log_file, "a") as f:
         f.write(f"Testing loss: {test_loss}\n")

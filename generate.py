@@ -35,7 +35,7 @@ def generate(model):
         print(f"> {decoded}\n")       
 
 # Choose a model to complete sentences
-checkpoint_path = os.path.join("log/model_00000.pt")
+checkpoint_path = os.path.join("log/model_05000.pt")
 checkpoint = torch.load(checkpoint_path)
 model = GPT(checkpoint["config"])
 model.load_state_dict(checkpoint['model'])

@@ -40,7 +40,7 @@ plt.xlabel("steps")
 plt.ylabel("loss")
 plt.legend()
 plt.title("Loss")
-plt.savefig('figure/loss.png')
+plt.savefig('loss.png')
 
 test_loss = losses["test"]
 print(f"Testing loss: {test_loss}")
