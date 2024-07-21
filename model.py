@@ -4,6 +4,7 @@ import torch.nn as nn
 from torch.nn import functional as F
 import math
 from transformers import GPT2LMHeadModel
+import tiktoken
 
 class CausalSelfAttention(nn.Module):
     def __init__(self, config):
@@ -87,7 +88,7 @@ class GPT(nn.Module):
     def __init__(self, config):
         super().__init__()
         self.config = config
-        print(f'Config: {self.config}')
+        # print(f'Config: {self.config}')
         self.transformer = nn.ModuleDict(dict(
             wte = nn.Embedding(config.vocab_size, config.n_embd),
             wpe = nn.Embedding(config.block_size, config.n_embd),
@@ -99,8 +100,8 @@ class GPT(nn.Module):
 
         # Weight sharing scheme (?)
         self.transformer.wte.weight = self.lm_head.weight
-        print(f"wte weight shape: {self.transformer.wte.weight.shape}")
-        print(f"self.lm_head.weight shape: {self.lm_head.weight.shape}")
+        # print(f"wte weight shape: {self.transformer.wte.weight.shape}")
+        # print(f"self.lm_head.weight shape: {self.lm_head.weight.shape}")
 
         # Init parameters
         self.apply(self._init_weights)
@@ -137,6 +138,25 @@ class GPT(nn.Module):
             loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1))
         return logits, loss
     
+    def generate_sequence(self, model, tokens, num_sequences, max_length):   
+        tokens = torch.tensor(tokens, dtype = torch.long) 
+        tokens = tokens.unsqueeze(0).repeat(num_sequences, 1)
+        x = tokens
+
+        # Generate!
+        while x.size(1) < max_length:
+            with torch.no_grad():
+                logits, _ = model(x) # (B, T, vocab_size)
+                # Take the logits at the last position
+                logits = logits[:, -1, :] # (B, vocab_size)
+                probs = F.softmax(logits, dim = -1)
+                # Do top-k sampling of 50
+                topk_probs, topk_indices = torch.topk(probs, 50, dim = -1) # (B, 50)
+                ix = torch.multinomial(topk_probs, 1) # (B, 1), select one token for each sequence
+                xcol = torch.gather(topk_indices, -1, ix) # (B, 1), gather the corresponding indices
+                x = torch.cat((x, xcol), dim = 1) # Append the selected token to the sequence
+        return x
+
 
     @classmethod
     def from_pretrained(cls, model_type):
