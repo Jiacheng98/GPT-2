@@ -11,5 +11,11 @@ COPY . /app
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# Run the application
-ENTRYPOINT ["python", "main.py"]
+# Copy the entrypoint script into the container
+COPY entrypoint.sh /app/entrypoint.sh
+
+# Ensure the entrypoint script is executable
+RUN chmod +x /app/entrypoint.sh
+
+# Run the entrypoint script
+ENTRYPOINT ["/app/entrypoint.sh"]
