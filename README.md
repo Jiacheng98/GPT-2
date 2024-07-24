@@ -44,7 +44,7 @@ You can also run the project in a Docker container:
 
 2. **Build the Docker image**:
     ```bash
-    sudo docker build -t gpt-2 .
+    sudo docker build -t gpt-2 -f Dockerfile .
     ```
 
 3. **Run a Docker container**:
